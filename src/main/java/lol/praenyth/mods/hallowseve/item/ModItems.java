@@ -1,7 +1,7 @@
-package lol.praenyth.mods.item;
+package lol.praenyth.mods.hallowseve.item;
 
-import lol.praenyth.mods.HallowsEve;
-import lol.praenyth.mods.item.items.SoulItem;
+import lol.praenyth.mods.hallowseve.HallowsEve;
+import lol.praenyth.mods.hallowseve.item.items.SoulItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;

@@ -16,7 +16,7 @@
 	"environment": "server",
 	"entrypoints": {
 		"main": [
-			"lol.praenyth.mods.HallowsEve"
+			"lol.praenyth.mods.hallowseve.HallowsEve"
 		]
 	},
 	"mixins": [

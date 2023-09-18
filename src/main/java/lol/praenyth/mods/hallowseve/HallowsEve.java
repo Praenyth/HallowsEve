@@ -1,6 +1,6 @@
-package lol.praenyth.mods;
+package lol.praenyth.mods.hallowseve;
 
-import lol.praenyth.mods.item.ModItems;
+import lol.praenyth.mods.hallowseve.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;

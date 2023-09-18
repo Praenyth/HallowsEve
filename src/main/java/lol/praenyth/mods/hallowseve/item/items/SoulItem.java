@@ -1,4 +1,4 @@
-package lol.praenyth.mods.item.items;
+package lol.praenyth.mods.hallowseve.item.items;
 
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import net.minecraft.item.Item;

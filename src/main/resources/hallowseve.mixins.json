@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "lol.praenyth.mods.mixin",
+	"package": "lol.praenyth.mods.hallowseve.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"SoulDropMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
