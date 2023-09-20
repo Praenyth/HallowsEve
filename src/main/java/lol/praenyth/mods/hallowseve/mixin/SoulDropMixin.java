@@ -62,12 +62,25 @@ public abstract class SoulDropMixin {
 				}
 			}
 
+			if (soulCount >= 100) {
+
+				for (StatusEffect effect : getEffects(100).keySet()) {
+					player.addStatusEffect(
+							new StatusEffectInstance(
+									effect, 60, getEffects(100).get(effect), false, false, true
+							)
+					);
+				}
+				return;
+
+			}
+
 			if (soulCount >= 5) {
 
 				for (StatusEffect effect : getEffects(soulCount).keySet()) {
 					player.addStatusEffect(
 							new StatusEffectInstance(
-									effect, 60, 0, false, false, true // TODO: replace the amplifier with a variable
+									effect, 60, getEffects(soulCount).get(effect), false, false, true
 							)
 					);
 				}
