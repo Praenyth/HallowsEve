@@ -1,5 +1,6 @@
 package lol.praenyth.mods.hallowseve.mixin;
 
+import lol.praenyth.mods.hallowseve.HallowsEve;
 import lol.praenyth.mods.hallowseve.item.ModItems;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mixin(ServerPlayerEntity.class)
@@ -22,16 +25,16 @@ public abstract class SoulDropMixin {
 
 	@Unique private int soulCheckTicksLeft = 0; // ticks left on the soul check timer
 	@Unique private int soulDropTicksLeft = 0; // ticks left on the soul drop timer
-	@Unique private static boolean canDrop = true; // regardless of whether the player can drop a soul
+	@Unique private static List<String> playersWithoutSouls = new ArrayList<>();
 	@Unique private final ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 	@Shadow public abstract ItemEntity dropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership);
 
 	@Inject(at = @At("HEAD"), method = "onDeath")
 	private void hallowseve$onDeath(DamageSource damageSource, CallbackInfo ci) {
 
-		if (canDrop) {
-			this.dropItem(new ItemStack(ModItems.SOUL), true, true);
-			canDrop = false;
+		if (playersWithoutSouls.contains(player.getUuidAsString())) {
+			player.dropItem(new ItemStack(ModItems.SOUL), true, true);
+			playersWithoutSouls.remove(player.getUuidAsString());
 		}
 
 	}
@@ -39,22 +42,23 @@ public abstract class SoulDropMixin {
 	@Inject(at = @At("TAIL"), method = "playerTick")
 	private void hallowseve$tick(CallbackInfo ci) {
 
-		if (!canDrop) {
-			++soulDropTicksLeft; // adding this, so it actually increments, despite not being in the death method
+		if (!playersWithoutSouls.contains(player.getUuidAsString())) {
+			++this.soulDropTicksLeft; // adding this, so it actually increments, despite not being in the death method
 
-			if (soulDropTicksLeft == 36000) {
-				canDrop = true;
-				soulDropTicksLeft = 0;
+			if (this.soulDropTicksLeft >= 100) {
+				playersWithoutSouls.add(player.getUuidAsString());
+				this.soulDropTicksLeft = 0;
 			}
 
 		}
 
-		++soulCheckTicksLeft;
+		++this.soulCheckTicksLeft;
 
-		if (soulCheckTicksLeft == 10) {
+		if (this.soulCheckTicksLeft >= 10) {
 
+			// check for souls in inventory
 			int soulCount = 0;
-			soulCheckTicksLeft = 0;
+			this.soulCheckTicksLeft = 0;
 
 			for (ItemStack item : player.getInventory().main) {
 				if (item.getItem() == ModItems.SOUL) {
@@ -62,6 +66,7 @@ public abstract class SoulDropMixin {
 				}
 			}
 
+			// check for max souls
 			if (soulCount >= 100) {
 
 				for (StatusEffect effect : getEffects(100).keySet()) {
@@ -75,6 +80,7 @@ public abstract class SoulDropMixin {
 
 			}
 
+			// check for bare minimum souls
 			if (soulCount >= 5) {
 
 				for (StatusEffect effect : getEffects(soulCount).keySet()) {
